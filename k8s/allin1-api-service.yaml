@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: usecase01-service
+  namespace: ns-rch-01
+spec:
+  type: ClusterIP
+  ports:
+   - name: http
+     protocol: TCP
+     port: 3000
+     targetPort: 3000
+  selector:
+     app: usecase01-pod
+

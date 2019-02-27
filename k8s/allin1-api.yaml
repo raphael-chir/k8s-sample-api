@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: usecase01-deployment
+  namespace: ns-rch-01
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: usecase01-pod
+    spec:
+      containers:
+      - name: usecase01-mongodb 
+        image: "mycluster.icp:8500/ns-rch-01/usecase01-mongodb:v1"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 27017
+      - name: usecase01-node-api
+        image: "mycluster.icp:8500/ns-rch-01/usecase01-node-api:v1"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env: 
+        - name: MONGODB_CNX
+          value: "mongodb://localhost:27017"
+apiVersion: v1
+kind: Service
+metadata:
+  name: usecase01-service
+  namespace: ns-rch-01
+spec:
+  type: ClusterIP
+  ports:
+   - name: http
+     protocol: TCP
+     port: 3000
+     targetPort: 3000
+  selector:
+     app: usecase01-pod
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: usecase01-ingress
+ namespace: ns-rch-01
+ annotations:
+   ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /usecase01
+        backend:
+         serviceName: usecase01-service
+         servicePort: 3000
+

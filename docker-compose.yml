@@ -1,0 +1,27 @@
+version: '3'
+networks:
+  app-tier:
+    driver: bridge
+services:
+  web:  
+    build: .
+    ports:
+      - 3001:3000
+    networks: 
+      - app-tier 
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_HOST=mongodb
+      - MONGODB_DATABASE=todo
+      - MONGODB_LOGIN=user-dev
+      - MONGODB_PWD=Admin6
+    restart: always
+  mongodb:
+    image: bitnami/mongodb:3.7.1-r0
+    networks: 
+      - app-tier
+    environment:
+      - MONGODB_USERNAME=user-dev
+      - MONGODB_PASSWORD=Admin6
+      - MONGODB_DATABASE=todo

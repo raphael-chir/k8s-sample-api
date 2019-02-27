@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: usecase01-node-api-ingress
+ namespace: ns-rch-01
+ annotations:
+   ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /usecase01-node-api
+        backend:
+         serviceName: usecase01-node-api-service
+         servicePort: 3000
+

@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: usecase01-deployment
+  namespace: ns-rch-01
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: usecase01-pod
+    spec:
+      containers:
+      - name: usecase01-mongodb 
+        image: "mycluster.icp:8500/ns-rch-01/usecase01-mongodb:v1"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 27017
+      - name: usecase01-node-api
+        image: "mycluster.icp:8500/ns-rch-01/usecase01-node-api:v1"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env: 
+        - name: MONGODB_CNX
+          value: "mongodb://localhost:27017"
